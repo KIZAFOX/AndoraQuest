@@ -1,4 +1,4 @@
-package fr.kizafox.quest.tools;
+package fr.kizafox.andora.tools;
 
 import org.bukkit.Color;
 import org.bukkit.DyeColor;

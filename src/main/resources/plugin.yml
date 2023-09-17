@@ -5,6 +5,3 @@ authors: [KIZAFOX]
 description: '${project.description}'
 website: '${project.url}'
 api-version: '1.20'
-
-commands:
-  quest:
