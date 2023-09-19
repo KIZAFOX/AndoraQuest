@@ -13,13 +13,13 @@ public abstract class Skills {
 
     abstract public void delete();
 
-    abstract public double getHealthBonus();
+    abstract public int getSkillPoint();
 
-    abstract public void setHealthBonus(final double amount);
+    abstract public void setSkillPoint(final int amount);
 
-    abstract public void addHealthBonus(final double amount);
+    abstract public void addSkillPoint(final int amount);
 
-    abstract public void removeHealthBonus(final double amount);
+    abstract public void removeSkillPoint(final int amount);
 
     abstract public double getDamageBonus();
 
@@ -29,11 +29,11 @@ public abstract class Skills {
 
     abstract public void removeDamageBonus(final double amount);
 
-    abstract public double getMovementSpeedBonus();
+    abstract public double getHealthBonus();
 
-    abstract public void setMovementSpeedBonus(final double amount);
+    abstract public void setHealthBonus(final double amount);
 
-    abstract public void addMovementSpeedBonus(final double amount);
+    abstract public void addHealthBonus(final double amount);
 
-    abstract public void removeMovementSpeedBonus(final double amount);
+    abstract public void removeHealthBonus(final double amount);
 }

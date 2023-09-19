@@ -4,6 +4,7 @@ import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -268,6 +269,15 @@ public class ItemBuilder {
         } catch (ClassCastException e) {
             throw new ClassCastException();
         }
+        return this;
+    }
+
+    public ItemBuilder hideEnchant(){
+        final ItemMeta itemMeta = this.itemStack.getItemMeta();
+        Objects.requireNonNull(itemMeta).addEnchant(Enchantment.DAMAGE_ALL, 1, true);
+        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+        this.itemStack.setItemMeta(itemMeta);
         return this;
     }
 

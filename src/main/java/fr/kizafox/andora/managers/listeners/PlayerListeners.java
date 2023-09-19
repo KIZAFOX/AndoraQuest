@@ -3,6 +3,7 @@ package fr.kizafox.andora.managers.listeners;
 import fr.kizafox.andora.Andora;
 import fr.kizafox.andora.tools.database.requests.user.UserAccount;
 import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,6 +11,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -33,12 +35,26 @@ public class PlayerListeners implements Listener {
         final UserAccount userAccount = new UserAccount(this.instance, player);
 
         userAccount.initialize();
-        player.sendMessage(ChatColor.YELLOW + "Hello, " + ChatColor.AQUA + player.getName() + ChatColor.YELLOW + " you have " + ChatColor.AQUA + userAccount.getMoney() + ChatColor.YELLOW + "€ in your balance!");
+        this.instance.getManagers().getBoard().onLogin(event);
+
+        player.sendMessage(ChatColor.DARK_RED + "Liste des attributs et leurs valeurs par défaut :");
+        this.instance.getServer().getScheduler().runTaskLater(this.instance, () -> {
+            for (Attribute attribute : Attribute.values()) {
+                if (player.getAttribute(attribute) != null) {
+                    double defaultValue = player.getAttribute(attribute).getDefaultValue();
+                    player.sendMessage(ChatColor.DARK_GRAY + "- " + ChatColor.YELLOW + ChatColor.BOLD + attribute.name() + ChatColor.DARK_GRAY + " -> " + ChatColor.AQUA + ChatColor.ITALIC + defaultValue);
+                } else {
+                    //player.sendMessage("- " + attribute.name() + " -> Non défini pour ce joueur");
+                }
+            }
+        }, 20L * 2);
     }
+
     @EventHandler
     public void onLogout(final PlayerQuitEvent event){
         final Player player = event.getPlayer();
         UserAccount.getUserAccount(player).delete();
+        this.instance.getManagers().getBoard().onLogout(event);
     }
 
     @EventHandler

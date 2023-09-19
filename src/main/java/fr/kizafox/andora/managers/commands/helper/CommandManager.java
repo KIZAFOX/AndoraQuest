@@ -1,4 +1,4 @@
-package fr.kizafox.andora.managers.commands;
+package fr.kizafox.andora.managers.commands.helper;
 
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;

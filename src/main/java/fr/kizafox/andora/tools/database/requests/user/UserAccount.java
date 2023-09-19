@@ -1,8 +1,8 @@
 package fr.kizafox.andora.tools.database.requests.user;
 
 import fr.kizafox.andora.Andora;
-import fr.kizafox.andora.tools.Maths;
-import fr.kizafox.andora.tools.classes.ClassUnit;
+import fr.kizafox.andora.tools.utils.Maths;
+import fr.kizafox.andora.tools.database.requests.classes.ClassUnit;
 import fr.kizafox.andora.tools.database.requests.DBQuery;
 import fr.kizafox.andora.tools.database.requests.skills.PlayerSkills;
 import org.bukkit.ChatColor;
@@ -45,7 +45,7 @@ public class UserAccount extends User{
     public void initialize() {
         this.instance.getUserAccounts().add(this);
 
-        new DBQuery(this.instance.getDbHandler().pool().getDataSource()).query(((resultSet, throwables) -> {
+        new DBQuery(this.instance.getManagers().getDbHandler().pool().getDataSource()).query(((resultSet, throwables) -> {
             if(throwables != null){
                 Andora.sendLog(ChatColor.RED + "An error occurred: " + throwables.getMessage());
                 return;
@@ -53,7 +53,7 @@ public class UserAccount extends User{
 
             try {
                 if(!resultSet.next()){
-                    new DBQuery(this.instance.getDbHandler().pool().getDataSource()).update("INSERT INTO " + TABLE + " (uuid, name, class, money) VALUES ('" + this.uuid + "', '" + player.getName() + "', '" + ClassUnit.PEASANT.getName() + "', '0.0')");
+                    new DBQuery(this.instance.getManagers().getDbHandler().pool().getDataSource()).update("INSERT INTO " + TABLE + " (uuid, name, class, money) VALUES ('" + this.uuid + "', '" + player.getName() + "', '" + ClassUnit.PEASANT.getName() + "', '0.0')");
                 }
             }catch (final SQLException e){
                 Andora.sendLog(ChatColor.RED + "An error occurred while processing the result set: " + e.getMessage());
@@ -69,8 +69,27 @@ public class UserAccount extends User{
     }
 
     @Override
+    public ClassUnit getClassUnit() {
+        return (ClassUnit) new DBQuery(this.instance.getManagers().getDbHandler().pool().getDataSource()).query((resultSet -> {
+            try {
+                if(resultSet.next()){
+                    return ClassUnit.getByName(resultSet.getString("class"));
+                }
+            } catch (SQLException e) {
+                Andora.sendLog(ChatColor.RED + "An error occurred while processing the result set: " + e.getMessage());
+            }
+            return ClassUnit.PEASANT;
+        }), "SELECT * FROM " + TABLE + " WHERE uuid='" + uuid + "'");
+    }
+
+    @Override
+    public void setClassUnit(ClassUnit classUnit) {
+        new DBQuery(this.instance.getManagers().getDbHandler().pool().getDataSource()).update("UPDATE " + TABLE + " SET class='" + classUnit.getName() + "' WHERE uuid='" + uuid + "'");
+    }
+
+    @Override
     public double getMoney() {
-        return (double) new DBQuery(this.instance.getDbHandler().pool().getDataSource()).query((resultSet -> {
+        return (double) new DBQuery(this.instance.getManagers().getDbHandler().pool().getDataSource()).query((resultSet -> {
             try {
                 if(resultSet.next()){
                     return resultSet.getDouble("money");
@@ -84,7 +103,7 @@ public class UserAccount extends User{
 
     @Override
     public void setMoney(double amount) {
-        new DBQuery(this.instance.getDbHandler().pool().getDataSource()).update("UPDATE " + TABLE + " SET money='" + Maths.around(amount) + "' WHERE uuid='" + uuid + "'");
+        new DBQuery(this.instance.getManagers().getDbHandler().pool().getDataSource()).update("UPDATE " + TABLE + " SET money='" + Maths.around(amount) + "' WHERE uuid='" + uuid + "'");
     }
 
     @Override
@@ -95,5 +114,10 @@ public class UserAccount extends User{
     @Override
     public void removeMoney(double amount) {
         this.setMoney(this.getMoney() < amount ? 0 : this.getMoney() - amount);
+    }
+
+    @Override
+    public PlayerSkills getPlayerSkills() {
+        return this.playerSkills;
     }
 }

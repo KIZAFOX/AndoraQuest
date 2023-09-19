@@ -50,10 +50,9 @@ public class DBQuery {
                 "`#` INT NOT NULL AUTO_INCREMENT PRIMARY KEY, " +
                 "uuid VARCHAR(255), " +
                 "name VARCHAR(255), " +
-                "healthBonus DOUBLE, " +
+                "skillPoint BIGINT, " +
                 "damageBonus DOUBLE, " +
-                "movementSpeedBonus DOUBLE)");
-
+                "healthBonus DOUBLE)");
     }
 
     public void update(final String query){

@@ -1,4 +1,4 @@
-package fr.kizafox.andora.tools;
+package fr.kizafox.andora.tools.utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

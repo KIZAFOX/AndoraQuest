@@ -1,13 +1,10 @@
-package fr.kizafox.andora.managers.commands.command;
+package fr.kizafox.andora.managers.commands;
 
 import fr.kizafox.andora.Andora;
-import fr.kizafox.andora.managers.commands.SubCommand;
+import fr.kizafox.andora.managers.commands.helper.SubCommand;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +16,7 @@ import java.util.List;
  * @date : 17/09/2023
  * @project : Andora
  */
-public class AndoraCommand extends SubCommand {
+public class SkillsCommand extends SubCommand {
 
     private final Andora instance = Andora.get();
 
@@ -35,7 +32,7 @@ public class AndoraCommand extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "Description de la commande des compétences";
+        return "Ouvre le menu des compétences";
     }
 
     @Override

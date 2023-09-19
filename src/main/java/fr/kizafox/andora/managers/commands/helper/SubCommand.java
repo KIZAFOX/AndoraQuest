@@ -1,4 +1,4 @@
-package fr.kizafox.andora.managers.commands;
+package fr.kizafox.andora.managers.commands.helper;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
