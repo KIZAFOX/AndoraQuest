@@ -7,8 +7,10 @@ import fr.kizafox.andora.managers.listeners.CancelListeners;
 import fr.kizafox.andora.managers.listeners.PlayerListeners;
 import fr.kizafox.andora.tools.database.DBHandler;
 import fr.kizafox.andora.tools.database.requests.DBQuery;
+import fr.kizafox.andora.tools.database.requests.classes.spells.wizard.SpellsManager;
+import fr.kizafox.andora.tools.database.requests.classes.spells.wizard.spells.fireball.event.FireballListener;
+import fr.kizafox.andora.tools.database.requests.classes.spells.wizard.spells.teleport.event.TeleportListener;
 import fr.kizafox.andora.tools.database.requests.user.UserAccount;
-import fr.kizafox.andora.tools.game.spells.wizard.event.SpellListeners;
 import fr.kizafox.andora.tools.gui.inventories.InventoryManager;
 import fr.kizafox.andora.tools.scoreboard.Board;
 import org.bukkit.*;
@@ -38,6 +40,7 @@ public class Managers {
 
     protected final InventoryManager inventoryManager;
     protected final Board board;
+    protected final SpellsManager spellsManager;
 
     public Managers(final Andora instance){
         this.instance = instance;
@@ -75,6 +78,7 @@ public class Managers {
 
         this.inventoryManager = new InventoryManager(this.instance);
         this.board = new Board(this.instance);
+        this.spellsManager = new SpellsManager(this.instance);
 
         this.registerListeners();
         this.registerCommands();
@@ -94,7 +98,9 @@ public class Managers {
         final List<Listener> listeners = Arrays.asList(
                 new PlayerListeners(this.instance),
                 new CancelListeners(this.instance),
-                new SpellListeners(this.instance));
+                new FireballListener(this.instance),
+                new TeleportListener(this.instance)
+        );
 
         listeners.forEach(listener -> this.instance.getServer().getPluginManager().registerEvents(listener, this.instance));
     }
@@ -121,5 +127,9 @@ public class Managers {
 
     public Board getBoard() {
         return board;
+    }
+
+    public SpellsManager getSpellsManager() {
+        return spellsManager;
     }
 }

@@ -1,14 +1,8 @@
 package fr.kizafox.andora.tools.gui.inventories.spells.sub;
 
 import fr.kizafox.andora.Andora;
-import fr.kizafox.andora.tools.ItemBuilder;
-import fr.kizafox.andora.tools.base64.CustomSkull;
-import fr.kizafox.andora.tools.database.requests.classes.ClassUnit;
-import fr.kizafox.andora.tools.game.spells.wizard.WizardSpellUnit;
 import fr.kizafox.andora.tools.gui.Gui;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -48,7 +42,7 @@ public class WizardSpellsGui extends Gui implements Listener {
     public void display(Player player) {
         final Inventory inventory = Bukkit.createInventory(null, this.getSize(), this.getTitle());
 
-        Arrays.stream(WizardSpellUnit.values()).forEach(spells -> inventory.addItem(spells.getItemBuilder().toItemStack()));
+        instance.getManagers().getSpellsManager().getItemForSpell().forEach(inventory::addItem);
 
         this.instance.getServer().getScheduler().runTask(this.instance, () -> player.openInventory(inventory));
     }
@@ -66,9 +60,9 @@ public class WizardSpellsGui extends Gui implements Listener {
             final Player player = (Player) event.getWhoClicked();
             final ItemStack itemStack = event.getCurrentItem();
 
-            Arrays.stream(WizardSpellUnit.values()).forEach(spells -> {
-                if(itemStack.getItemMeta().getDisplayName().equals(spells.getItemBuilder().toItemStack().getItemMeta().getDisplayName())){
-                    player.getInventory().addItem(spells.getItemBuilder().toItemStack());
+            instance.getManagers().getSpellsManager().getItemForSpell().forEach(spells -> {
+                if(itemStack.getItemMeta().getDisplayName().equals(spells.getItemMeta().getDisplayName())){
+                    player.getInventory().addItem(spells);
                 }
             });
 

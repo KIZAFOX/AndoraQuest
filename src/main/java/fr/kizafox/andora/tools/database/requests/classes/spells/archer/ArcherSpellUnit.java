@@ -1,4 +1,4 @@
-package fr.kizafox.andora.tools.game.spells.wizard;
+package fr.kizafox.andora.tools.database.requests.classes.spells.archer;
 
 import fr.kizafox.andora.tools.ItemBuilder;
 import org.bukkit.ChatColor;
@@ -14,9 +14,9 @@ import java.util.Arrays;
  * @date : 20/09/2023
  * @project : Andora
  */
-public enum WizardSpellUnit {
+public enum ArcherSpellUnit {
 
-    FIREBALL_LVL_1("Fireball I", 1, 50, 1, 1, 5,
+    FIREBALL_LVL_1("Fireball I", 1, 150, 1, 1, 0,
             new ItemBuilder(Material.ENCHANTED_BOOK).addBookEnchant(Enchantment.PROTECTION_FIRE, 1)
                     .setName(ChatColor.RED + "Fireball " + ChatColor.BOLD + "I")
                     .setLore(Arrays.asList(
@@ -37,7 +37,7 @@ public enum WizardSpellUnit {
                             " ",
                             ChatColor.GREEN + "» Cliquez choisir cette classe"
                     ))),
-    FIREBALL_LVL_2("Fireball II", 2, 50, 1, 1, 5,
+    FIREBALL_LVL_2("Fireball II", 2, 150, 1, 1, 0,
             new ItemBuilder(Material.ENCHANTED_BOOK).addBookEnchant(Enchantment.PROTECTION_FIRE, 2)
                     .setName(ChatColor.RED + "Fireball " + ChatColor.BOLD + "II")
                     .setLore(Arrays.asList(
@@ -105,7 +105,7 @@ public enum WizardSpellUnit {
     private final int level, manaCost, damage, aoe, cooldown;
     private final ItemBuilder itemBuilder;
 
-    WizardSpellUnit(String name, int level, int manaCost, int damage, int aoe, int cooldown, ItemBuilder itemBuilder) {
+    ArcherSpellUnit(String name, int level, int manaCost, int damage, int aoe, int cooldown, ItemBuilder itemBuilder) {
         this.name = name;
         this.level = level;
         this.manaCost = manaCost;

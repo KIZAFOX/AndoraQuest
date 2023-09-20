@@ -61,13 +61,6 @@ public class Board {
                 ChatColor.YELLOW + "• Dégât(s) bonus: " + ChatColor.LIGHT_PURPLE + playerSkills.getDamageBonus(),
                 ChatColor.YELLOW + "• Vie(s) bonus: " + ChatColor.LIGHT_PURPLE + playerSkills.getHealthBonus(),
                 "",
-                ChatColor.YELLOW + "• HP: " + ChatColor.LIGHT_PURPLE + board.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(),
-                ChatColor.YELLOW + "• R.P: " + ChatColor.LIGHT_PURPLE + board.getPlayer().getAttribute(Attribute.GENERIC_ARMOR).getValue(),
-                ChatColor.YELLOW + "• R.B: " + ChatColor.LIGHT_PURPLE + board.getPlayer().getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).getValue(),
-                ChatColor.YELLOW + "• DMG: " + ChatColor.LIGHT_PURPLE + board.getPlayer().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue(),
-                ChatColor.YELLOW + "• A.S: " + ChatColor.LIGHT_PURPLE + board.getPlayer().getAttribute(Attribute.GENERIC_ATTACK_SPEED).getValue(),
-                ChatColor.YELLOW + "• M.S: " + ChatColor.LIGHT_PURPLE + board.getPlayer().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue(),
-                "",
                 ChatColor.YELLOW + "play.andora.fr"
         );
     }
