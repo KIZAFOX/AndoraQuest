@@ -16,6 +16,8 @@ public abstract class User {
 
     abstract public void delete();
 
+    abstract public boolean hasAccount();
+
     abstract public ClassUnit getClassUnit();
 
     abstract public void setClassUnit(final ClassUnit classUnit);

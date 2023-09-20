@@ -1,13 +1,18 @@
 package fr.kizafox.andora.managers.listeners;
 
 import fr.kizafox.andora.Andora;
+import fr.kizafox.andora.tools.TexturePack;
 import fr.kizafox.andora.tools.database.requests.user.UserAccount;
+import fr.kizafox.andora.tools.game.tasks.NewPlayerTask;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -29,35 +34,51 @@ public class PlayerListeners implements Listener {
         this.instance = instance;
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onLogin(final PlayerJoinEvent event){
         final Player player = event.getPlayer();
-        final UserAccount userAccount = new UserAccount(this.instance, player);
+        final UserAccount account = new UserAccount(this.instance, player);
 
-        userAccount.initialize();
-        this.instance.getManagers().getBoard().onLogin(event);
+        if(!account.hasAccount()){
+            event.setJoinMessage(ChatColor.LIGHT_PURPLE + "Bienvenue sur le serveur " + player.getName() + " !");
+            new NewPlayerTask(this.instance, player).runTaskTimer(this.instance, 20L, 20L);
+        }else{
+            event.setJoinMessage(ChatColor.GRAY + "[" + ChatColor.GREEN + "+" + ChatColor.GRAY + "] " + player.getName());
 
-        player.sendMessage(ChatColor.DARK_RED + "Liste des attributs et leurs valeurs par défaut :");
-        this.instance.getServer().getScheduler().runTaskLater(this.instance, () -> {
-            for (Attribute attribute : Attribute.values()) {
-                if (player.getAttribute(attribute) != null) {
-                    double defaultValue = player.getAttribute(attribute).getDefaultValue();
-                    player.sendMessage(ChatColor.DARK_GRAY + "- " + ChatColor.YELLOW + ChatColor.BOLD + attribute.name() + ChatColor.DARK_GRAY + " -> " + ChatColor.AQUA + ChatColor.ITALIC + defaultValue);
-                } else {
-                    //player.sendMessage("- " + attribute.name() + " -> Non défini pour ce joueur");
-                }
-            }
-        }, 20L * 2);
+            this.instance.getServer().getScheduler().runTaskAsynchronously(this.instance, account::initialize);
+
+            this.instance.getManagers().getBoard().onLogin(event);
+
+            TexturePack.load(player);
+        }
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onLogout(final PlayerQuitEvent event){
         final Player player = event.getPlayer();
+
+        event.setQuitMessage(ChatColor.GRAY + "[" + ChatColor.RED + "-" + ChatColor.GRAY + "] " + player.getName());
+
         UserAccount.getUserAccount(player).delete();
         this.instance.getManagers().getBoard().onLogout(event);
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.MONITOR)
+    public void onAsyncPlayerChat(final AsyncPlayerChatEvent event){
+        final Player player = event.getPlayer();
+        final UserAccount account = UserAccount.getUserAccount(player);
+
+        event.setCancelled(true);
+
+        Bukkit.getOnlinePlayers().forEach(players -> {
+            if(players == null) return;
+            if(UserAccount.getUserAccount(players).hasAccount()){
+                players.sendMessage(account.getClassUnit().getName() + " " + ChatColor.GRAY + player.getName() + ChatColor.DARK_GRAY + " » " + ChatColor.WHITE + event.getMessage());
+            }
+        });
+    }
+
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onBlockBreak(final BlockBreakEvent event){
         final Player player = event.getPlayer();
         final UserAccount userAccount = UserAccount.getUserAccount(player);

@@ -71,4 +71,8 @@ public class Board {
                 ChatColor.YELLOW + "play.andora.fr"
         );
     }
+
+    public Map<UUID, FastBoard> getBoards() {
+        return boards;
+    }
 }

@@ -2,6 +2,7 @@ package fr.kizafox.andora.managers.listeners;
 
 import fr.kizafox.andora.Andora;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
@@ -23,7 +24,7 @@ public class CancelListeners implements Listener {
         this.instance = instance;
     }
 
-    @EventHandler
+    @EventHandler (priority = EventPriority.MONITOR)
     public void onCommandUse(final PlayerCommandPreprocessEvent event) {
         final List<String> commands = Arrays.asList("?", "pl", "about", "version", "ver", "plugins", "reload", "bukkit:?", "bukkit:pl", "bukkit:about", "bukkit:version", "bukkit:ver", "bukkit:plugins", "bukkit:reload", "minecraft:pl", "minecraft:plugins", "minecraft:about", "minecraft:version", "minecraft:ver");
         commands.forEach(all -> {

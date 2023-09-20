@@ -59,13 +59,33 @@ public class UserAccount extends User{
                 Andora.sendLog(ChatColor.RED + "An error occurred while processing the result set: " + e.getMessage());
             }
         }), "SELECT * FROM " + TABLE + " WHERE uuid=?", uuid);
+
         this.playerSkills.initialize();
+
+        this.player.setDisplayName(this.getClassUnit().getName() + ChatColor.GRAY + " " + player.getName());
+        this.player.setPlayerListName(this.getClassUnit().getName() + ChatColor.GRAY + " " + player.getName());
+
+        this.player.setPlayerListHeaderFooter(ChatColor.GOLD + "" + ChatColor.BOLD + "PLAY.ANDORA.FR", ChatColor.RED + "Serveur actuellement en développement !");
     }
 
     @Override
     public void delete() {
         this.instance.getUserAccounts().remove(this);
         PlayerSkills.getPlayerSkills(player).delete();
+    }
+
+    @Override
+    public boolean hasAccount() {
+        return (boolean) new DBQuery(this.instance.getManagers().getDbHandler().pool().getDataSource()).query((resultSet -> {
+            try {
+                if(resultSet.next()){
+                    return true;
+                }
+            }catch (final SQLException e) {
+                Andora.sendLog(ChatColor.RED + "An error occurred while processing the result set: " + e.getMessage());
+            }
+            return false;
+        }), "SELECT uuid FROM " + TABLE + " WHERE uuid='" + uuid + "'");
     }
 
     @Override

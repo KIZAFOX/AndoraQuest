@@ -1,5 +1,8 @@
 package fr.kizafox.andora.tools.database.requests;
 
+import fr.kizafox.andora.Andora;
+import org.bukkit.Bukkit;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,6 +32,8 @@ public class DBQuery {
     private final List<Connection> connections;
     private final List<PreparedStatement> statements;
 
+    protected final Andora instance = Andora.get();
+
     public DBQuery(final DataSource source){
         this.source = source;
         this.executorService = Executors.newFixedThreadPool(10);
@@ -56,16 +61,18 @@ public class DBQuery {
     }
 
     public void update(final String query){
-        try (Connection connection = this.source.getConnection()){
-            final PreparedStatement statement = connection.prepareStatement(query);
-            statement.executeUpdate();
-        }catch(SQLException e) {
-            throw new RuntimeException(e);
-        }
+        this.instance.getServer().getScheduler().runTaskAsynchronously(this.instance, () -> {
+            try (Connection connection = this.source.getConnection()){
+                final PreparedStatement statement = connection.prepareStatement(query);
+                statement.executeUpdate();
+            }catch(SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public void query(final BiConsumer<ResultSet, SQLException> resultConsumer, final String query, final String... params){
-        this.executorService.submit(() -> {
+        this.instance.getServer().getScheduler().runTaskAsynchronously(this.instance, () -> this.executorService.submit(() -> {
             try (final Connection connection = this.source.getConnection();
                  final PreparedStatement statement = connection.prepareStatement(query)){
 
@@ -95,7 +102,7 @@ public class DBQuery {
                     }
                 }
             }
-        });
+        }));
     }
 
     public Object query(Function<ResultSet, Object> consumer, String query){
