@@ -1,4 +1,4 @@
-package fr.kizafox.andora.tools.database.requests.classes.spells.wizard.spells.teleport;
+package fr.kizafox.andora.tools.database.requests.classes.spells.warrior.tornadosword;
 
 import fr.kizafox.andora.Andora;
 import fr.kizafox.andora.tools.ItemBuilder;
@@ -6,26 +6,32 @@ import fr.kizafox.andora.tools.database.requests.classes.spells.handler.Spell;
 import fr.kizafox.andora.tools.utils.RomanConverter;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Change this line to a short description of the class
  *
  * @author : KIZAFOX
- * @date : 20/09/2023
+ * @date : 22/09/2023
  * @project : Andora
  */
-public class Teleport extends Spell implements Listener {
+public class TornadoSword extends Spell implements Listener {
 
-    public Teleport(final Andora instance) {
+    private final List<ArmorStand> armorStands = new ArrayList<>();
+
+    public TornadoSword(final Andora instance) {
         super(instance);
 
         this.instance.getServer().getPluginManager().registerEvents(this, this.instance);
@@ -33,7 +39,7 @@ public class Teleport extends Spell implements Listener {
 
     @Override
     public String getName() {
-        return "Téléportation ";
+        return "TornadoSword ";
     }
 
     @Override
@@ -48,7 +54,7 @@ public class Teleport extends Spell implements Listener {
 
     @Override
     public float getDamage() {
-        return 0;
+        return 20;
     }
 
     @Override
@@ -58,20 +64,20 @@ public class Teleport extends Spell implements Listener {
 
     @Override
     public int getCooldown() {
-        return 0;
+        return 5;
     }
 
     @Override
     public ItemStack getItem() {
-        return new ItemBuilder(Material.ENCHANTED_BOOK).addBookEnchant(Enchantment.ARROW_DAMAGE, this.getLevel())
+        return new ItemBuilder(Material.IRON_SWORD).addEnchant(Enchantment.DURABILITY, this.getLevel())
                 .setName(ChatColor.RED + this.getName() + ChatColor.BOLD + RomanConverter.toRoman(this.getLevel()))
                 .setLore(Arrays.asList(
-                        ChatColor.DARK_GRAY + "Genre: " + ChatColor.AQUA + "Sort, Mage, Téléportation",
+                        ChatColor.DARK_GRAY + "Genre: " + ChatColor.AQUA + "Sort, Guerrier, Dégats",
                         " ",
                         ChatColor.WHITE + "" + ChatColor.BOLD + "       » Description «",
                         " ",
-                        ChatColor.GRAY + "  Permet de se téléport,",
-                        ChatColor.GRAY + "  à 5 blocs devant soit.",
+                        ChatColor.GRAY + "  Permet de faire apparaître,",
+                        ChatColor.GRAY + "  des tornades.",
                         " ",
                         ChatColor.WHITE + "" + ChatColor.BOLD + "       » Statistiques «",
                         " ",
@@ -85,7 +91,7 @@ public class Teleport extends Spell implements Listener {
                 )).toItemStack();
     }
 
-    @EventHandler (priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onSpellEvent(PlayerInteractEvent event) {
         final Player player = event.getPlayer();
         final ItemStack itemStack = player.getInventory().getItemInMainHand();
@@ -109,16 +115,38 @@ public class Teleport extends Spell implements Listener {
 
                         Spell.MANA.put(player.getUniqueId(), manaLeft - this.getManaCost());
 
-                        final Location location = player.getLocation();
-                        final Vector direction = location.getDirection();
-                        direction.multiply(5);
-                        location.add(direction);
-                        player.teleport(location);
+                        new BukkitRunnable(){
+                            int angle = 0;
 
-                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
-                        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, .5f, .5f);
+                            final int lines = 4;
+                            final double maxRadius = 10, maxHeight = 15, height = .5;
+                            final double radiusCalcul = maxRadius / maxHeight;
 
-                        player.spawnParticle(Particle.PORTAL, player.getLocation(), 100, 1, 1, 1);
+                            /**
+                             * Runs this operation.
+                             */
+                            @Override
+                            public void run() {
+                                for (int l = 0; l < lines; l++) {
+                                    for (double y = 0; y < maxHeight; y += height) {
+                                        final double radius = y * radiusCalcul;
+                                        final double x = Math.cos(Math.toRadians((double) 360 / lines * l + y * 25 - angle)) * radius;
+                                        final double z = Math.sin(Math.toRadians((double) 360 / lines * l + y * 25 - angle)) * radius;
+
+                                        player.getLocation().getWorld().spawnParticle(Particle.CLOUD, player.getLocation().clone().add(x, y, z), 1, 0, 0,0, 0);
+                                    }
+                                }
+                                angle++;
+                            }
+                        }.runTaskTimer(this.instance, 0L, 1L);
+
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                armorStands.forEach(Entity::remove);
+                                armorStands.clear();
+                            }
+                        }.runTaskLater(this.instance, 20L * 10);
                     }
                 }
             });

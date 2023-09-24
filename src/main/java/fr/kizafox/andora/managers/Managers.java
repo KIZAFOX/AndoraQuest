@@ -7,9 +7,7 @@ import fr.kizafox.andora.managers.listeners.CancelListeners;
 import fr.kizafox.andora.managers.listeners.PlayerListeners;
 import fr.kizafox.andora.tools.database.DBHandler;
 import fr.kizafox.andora.tools.database.requests.DBQuery;
-import fr.kizafox.andora.tools.database.requests.classes.spells.wizard.SpellsManager;
-import fr.kizafox.andora.tools.database.requests.classes.spells.wizard.spells.fireball.event.FireballListener;
-import fr.kizafox.andora.tools.database.requests.classes.spells.wizard.spells.teleport.event.TeleportListener;
+import fr.kizafox.andora.tools.database.requests.classes.spells.SpellsManager;
 import fr.kizafox.andora.tools.database.requests.user.UserAccount;
 import fr.kizafox.andora.tools.gui.inventories.InventoryManager;
 import fr.kizafox.andora.tools.scoreboard.Board;
@@ -97,9 +95,7 @@ public class Managers {
     private void registerListeners() {
         final List<Listener> listeners = Arrays.asList(
                 new PlayerListeners(this.instance),
-                new CancelListeners(this.instance),
-                new FireballListener(this.instance),
-                new TeleportListener(this.instance)
+                new CancelListeners(this.instance)
         );
 
         listeners.forEach(listener -> this.instance.getServer().getPluginManager().registerEvents(listener, this.instance));

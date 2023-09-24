@@ -1,5 +1,6 @@
-package fr.kizafox.andora.tools.database.requests.classes.spells;
+package fr.kizafox.andora.tools.database.requests.classes.spells.handler;
 
+import fr.kizafox.andora.Andora;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -13,10 +14,17 @@ import java.util.UUID;
  * @date : 20/09/2023
  * @project : Andora
  */
-public abstract class Spell {
+public abstract class Spell implements SpellListener{
 
-    public static final Map<UUID, Integer> mana = new HashMap<>();
-    public static final Map<UUID, String> wandCombo = new HashMap<>();
+    protected final Andora instance;
+
+    public static final Map<UUID, Integer> MANA = new HashMap<>();
+    public static final Map<UUID, String> WAND_COMBO = new HashMap<>();
+
+
+    public Spell(final Andora instance) {
+        this.instance = instance;
+    }
 
     public abstract String getName();
 
@@ -24,7 +32,7 @@ public abstract class Spell {
 
     public abstract int getManaCost();
 
-    public abstract int getDamage();
+    public abstract float getDamage();
 
     public abstract int getAOE();
 

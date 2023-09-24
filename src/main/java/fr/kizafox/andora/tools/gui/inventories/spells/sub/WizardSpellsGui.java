@@ -42,7 +42,7 @@ public class WizardSpellsGui extends Gui implements Listener {
     public void display(Player player) {
         final Inventory inventory = Bukkit.createInventory(null, this.getSize(), this.getTitle());
 
-        instance.getManagers().getSpellsManager().getItemForSpell().forEach(inventory::addItem);
+        instance.getManagers().getSpellsManager().getWizardSpellsManager().getItemForSpell().forEach(inventory::addItem);
 
         this.instance.getServer().getScheduler().runTask(this.instance, () -> player.openInventory(inventory));
     }
@@ -60,7 +60,7 @@ public class WizardSpellsGui extends Gui implements Listener {
             final Player player = (Player) event.getWhoClicked();
             final ItemStack itemStack = event.getCurrentItem();
 
-            instance.getManagers().getSpellsManager().getItemForSpell().forEach(spells -> {
+            instance.getManagers().getSpellsManager().getWizardSpellsManager().getItemForSpell().forEach(spells -> {
                 if(itemStack.getItemMeta().getDisplayName().equals(spells.getItemMeta().getDisplayName())){
                     player.getInventory().addItem(spells);
                 }

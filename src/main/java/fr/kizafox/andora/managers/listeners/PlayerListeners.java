@@ -2,11 +2,8 @@ package fr.kizafox.andora.managers.listeners;
 
 import fr.kizafox.andora.Andora;
 import fr.kizafox.andora.tools.TexturePack;
-import fr.kizafox.andora.tools.database.requests.classes.spells.Spell;
 import fr.kizafox.andora.tools.database.requests.user.UserAccount;
 import fr.kizafox.andora.tools.game.tasks.NewPlayerTask;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -17,7 +14,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Random;
 

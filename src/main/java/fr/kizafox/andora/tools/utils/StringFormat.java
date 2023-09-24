@@ -12,7 +12,7 @@ import org.bukkit.ChatColor;
 public class StringFormat {
 
     public static String formatCombo(String combo) {
-        final StringBuilder comboBuilder = new StringBuilder(combo + ChatColor.GRAY);
+        StringBuilder comboBuilder = new StringBuilder(combo + ChatColor.GRAY + "_");
         comboBuilder.append("_".repeat(Math.max(0, 3 - comboBuilder.length())));
         combo = comboBuilder.toString();
         combo = combo.toUpperCase().replace("L", ChatColor.DARK_BLUE + "L").replace("R", ChatColor.DARK_RED + "R");

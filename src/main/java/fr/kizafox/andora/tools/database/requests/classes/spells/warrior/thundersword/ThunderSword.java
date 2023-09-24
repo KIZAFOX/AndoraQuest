@@ -1,4 +1,4 @@
-package fr.kizafox.andora.tools.database.requests.classes.spells.wizard.spells.teleport;
+package fr.kizafox.andora.tools.database.requests.classes.spells.warrior.thundersword;
 
 import fr.kizafox.andora.Andora;
 import fr.kizafox.andora.tools.ItemBuilder;
@@ -12,7 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
 
@@ -20,12 +20,11 @@ import java.util.Arrays;
  * Change this line to a short description of the class
  *
  * @author : KIZAFOX
- * @date : 20/09/2023
+ * @date : 22/09/2023
  * @project : Andora
  */
-public class Teleport extends Spell implements Listener {
-
-    public Teleport(final Andora instance) {
+public class ThunderSword extends Spell implements Listener {
+    public ThunderSword(final Andora instance) {
         super(instance);
 
         this.instance.getServer().getPluginManager().registerEvents(this, this.instance);
@@ -33,7 +32,7 @@ public class Teleport extends Spell implements Listener {
 
     @Override
     public String getName() {
-        return "Téléportation ";
+        return "ThunderSword ";
     }
 
     @Override
@@ -48,7 +47,7 @@ public class Teleport extends Spell implements Listener {
 
     @Override
     public float getDamage() {
-        return 0;
+        return 20;
     }
 
     @Override
@@ -58,20 +57,20 @@ public class Teleport extends Spell implements Listener {
 
     @Override
     public int getCooldown() {
-        return 0;
+        return 5;
     }
 
     @Override
     public ItemStack getItem() {
-        return new ItemBuilder(Material.ENCHANTED_BOOK).addBookEnchant(Enchantment.ARROW_DAMAGE, this.getLevel())
+        return new ItemBuilder(Material.IRON_SWORD).addEnchant(Enchantment.DURABILITY, this.getLevel())
                 .setName(ChatColor.RED + this.getName() + ChatColor.BOLD + RomanConverter.toRoman(this.getLevel()))
                 .setLore(Arrays.asList(
-                        ChatColor.DARK_GRAY + "Genre: " + ChatColor.AQUA + "Sort, Mage, Téléportation",
+                        ChatColor.DARK_GRAY + "Genre: " + ChatColor.AQUA + "Sort, Guerrier, Dégats",
                         " ",
                         ChatColor.WHITE + "" + ChatColor.BOLD + "       » Description «",
                         " ",
-                        ChatColor.GRAY + "  Permet de se téléport,",
-                        ChatColor.GRAY + "  à 5 blocs devant soit.",
+                        ChatColor.GRAY + "  Permet de faire apparaître,",
+                        ChatColor.GRAY + "  des éclairs autour de soit.",
                         " ",
                         ChatColor.WHITE + "" + ChatColor.BOLD + "       » Statistiques «",
                         " ",
@@ -110,15 +109,43 @@ public class Teleport extends Spell implements Listener {
                         Spell.MANA.put(player.getUniqueId(), manaLeft - this.getManaCost());
 
                         final Location location = player.getLocation();
-                        final Vector direction = location.getDirection();
-                        direction.multiply(5);
-                        location.add(direction);
-                        player.teleport(location);
 
-                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
-                        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, .5f, .5f);
+                        new BukkitRunnable(){
+                            int strikes = 3;
 
-                        player.spawnParticle(Particle.PORTAL, player.getLocation(), 100, 1, 1, 1);
+                            /**
+                             * Runs this operation.
+                             */
+                            @Override
+                            public void run() {
+                                final Location[] locations = new Location[3];
+
+                                for(int i = 0; i < 3; i++){
+                                    double x = Math.random() * 6, z = Math.random() * 6;
+
+                                    if(Math.random() > 0.5){
+                                        x *= -1;
+                                    }
+
+                                    if(Math.random() > 0.5){
+                                        z *= -1;
+                                    }
+                                    locations[i] = location.clone().add(x, 0, z);
+                                }
+
+                                Arrays.stream(locations).forEach(location -> {
+                                    location.getWorld().strikeLightning(location);
+                                    location.getWorld().spawnParticle(Particle.FLASH, location, 1);
+
+                                    player.playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1.0F, 1.0F);
+                                });
+
+                                strikes -= 1;
+                                if(strikes == 0){
+                                    cancel();
+                                }
+                            }
+                        }.runTaskTimer(this.instance, 0L, 6L);
                     }
                 }
             });

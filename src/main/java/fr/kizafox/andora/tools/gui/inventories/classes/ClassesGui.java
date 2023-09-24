@@ -122,7 +122,7 @@ public class ClassesGui extends Gui implements Listener {
             case WIZARD -> userAccount.setClassUnit(ClassUnit.WIZARD);
         }
 
-        player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(classUnit.getHealth());
+        player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + classUnit.getHealth());
         player.getAttribute(Attribute.GENERIC_ARMOR).setBaseValue(classUnit.getArmor());
         player.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS).setBaseValue(classUnit.getArmorToughness());
         player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(classUnit.getAttackDamage());
